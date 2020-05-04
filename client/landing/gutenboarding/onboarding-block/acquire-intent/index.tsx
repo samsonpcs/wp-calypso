@@ -64,11 +64,7 @@ const AcquireIntent: React.FunctionComponent = () => {
 	);
 	const verticalSelect = <VerticalSelect onNext={ () => setIsSiteTitleActive( true ) } />;
 	const nextStepButton = (
-		<Link
-			className="acquire-intent__question-skip"
-			isPrimary
-			to={ makePath( Step.DesignSelection ) }
-		>
+		<Link className="acquire-intent__next-button" isPrimary to={ makePath( Step.DesignSelection ) }>
 			{ siteTitle ? __( 'Choose a design' ) : skipLabel }
 		</Link>
 	);

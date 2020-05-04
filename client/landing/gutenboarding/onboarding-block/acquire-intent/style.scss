@@ -93,7 +93,7 @@
 }
 
 // Themed core button component
-.components-button.is-primary.acquire-intent__question-skip:not( :disabled ):not( [aria-disabled='true'] ) {
+.components-button.is-primary.acquire-intent__next-button:not( :disabled ):not( [aria-disabled='true'] ) {
 	background: var( --mainColor );
 	border-color: var( --mainColor );
 	border-radius: 4px;
