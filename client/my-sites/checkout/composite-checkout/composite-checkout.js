@@ -65,6 +65,12 @@ import { useGetThankYouUrl } from './use-get-thank-you-url';
 import createAnalyticsEventHandler from './record-analytics';
 import createContactValidationCallback from './contact-validation';
 import { fillInSingleCartItemAttributes } from 'lib/cart-values';
+import {
+	hasGoogleApps,
+	hasDomainRegistration,
+	hasTransferProduct,
+	needsExplicitAlternateEmailForGSuite,
+} from 'lib/cart-values/cart-items';
 
 const debug = debugFactory( 'calypso:composite-checkout' );
 
@@ -299,9 +305,19 @@ export default function CompositeCheckout( {
 		shouldShowContactDetailsValidationErrors,
 		isDisabled
 	) => {
+		const needsOnlyGoogleAppsDetails =
+			hasGoogleApps( responseCart ) &&
+			! hasDomainRegistration( responseCart ) &&
+			! hasTransferProduct( responseCart );
 		const getIsFieldDisabled = () => isDisabled;
+		const needsAlternateEmailForGSuite =
+			needsOnlyGoogleAppsDetails &&
+			needsExplicitAlternateEmailForGSuite( responseCart, contactDetails );
+
 		return (
 			<ManagedContactDetailsFormFields
+				needsOnlyGoogleAppsDetails={ needsOnlyGoogleAppsDetails }
+				needsAlternateEmailForGSuite={ needsAlternateEmailForGSuite }
 				contactDetails={ contactDetails }
 				contactDetailsErrors={
 					shouldShowContactDetailsValidationErrors ? contactDetailsErrors : {}
