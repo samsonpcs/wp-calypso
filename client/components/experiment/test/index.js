@@ -98,4 +98,10 @@ describe( 'Experiment Component', () => {
 		expect( container ).toMatchSnapshot();
 		expect( actions ).toHaveLength( 2 );
 	} );
+
+	test( 'fires exposure event if we receive no variation', () => {
+		const { container, actions } = testComponent( createState( undefined, false ), true );
+		expect( container ).toMatchSnapshot();
+		expect( actions ).toHaveLength( 2 );
+	} );
 } );

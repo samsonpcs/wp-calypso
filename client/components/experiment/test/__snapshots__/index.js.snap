@@ -24,6 +24,12 @@ exports[`Experiment Component fires exposure event for default variation 1`] = `
 </div>
 `;
 
+exports[`Experiment Component fires exposure event if we receive no variation 1`] = `
+<div>
+  Default
+</div>
+`;
+
 exports[`Experiment Component renders a default variation if loaded 1`] = `
 <div>
   Default
