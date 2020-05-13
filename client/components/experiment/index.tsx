@@ -1,7 +1,7 @@
 /**
  * External Dependencies
  */
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'types';
 
@@ -10,7 +10,8 @@ import { AppState } from 'types';
  */
 import { getVariationForUser, isLoading } from 'state/experiments/selectors';
 import QueryExperiments from 'components/data/query-experiments';
-import { ExperimentProps } from './experiment-props';
+import { ConnectedExperimentProps, ExperimentProps } from './experiment-props';
+import { recordTracksEvent } from 'state/analytics/actions';
 
 export { default as Variation } from './variation';
 export { default as DefaultVariation } from './default-variation';
@@ -21,8 +22,16 @@ export { default as LoadingVariations } from './loading-variations';
  *
  * @param props The properties that describe the experiment
  */
-export const Experiment: FunctionComponent< ExperimentProps > = ( props ) => {
-	const { isLoading: loading, variation, children } = props;
+export const Experiment: FunctionComponent< ConnectedExperimentProps > = ( props ) => {
+	const { isLoading: loading, variation, children, trackExposureEventAction } = props;
+
+	// only fire exposure event once we load and have a variation
+	useEffect( () => {
+		if ( ! loading && trackExposureEventAction !== null ) {
+			trackExposureEventAction();
+		}
+	}, [ variation, loading, trackExposureEventAction ] );
+
 	return (
 		<>
 			<QueryExperiments />
@@ -44,12 +53,48 @@ function mapStateToProps( state: AppState, ownProps?: ExperimentProps ): Experim
 			isLoading: false,
 		};
 	}
-	const { name: experimentName } = ownProps;
+	const { name: experimentName, event } = ownProps;
 	return {
 		isLoading: isLoading( state ),
 		variation: getVariationForUser( state, experimentName ),
+		event,
 		...ownProps,
 	};
 }
 
-export default connect( mapStateToProps )( Experiment );
+const trackExposure = (
+	eventName: string | undefined | null,
+	variation: string | undefined | null
+) => {
+	if ( eventName && variation ) {
+		return recordTracksEvent( eventName, {
+			variation,
+		} );
+	}
+
+	throw new Error( 'Tried to fire exposure event with no event defined!' );
+};
+
+const mapDispatchToProps = {
+	trackExposure,
+};
+
+const mergeProps = (
+	stateProps: ExperimentProps,
+	dispatchProps: {
+		trackExposure: typeof trackExposure;
+	},
+	ownProps: ExperimentProps
+) => {
+	const { event } = ownProps;
+	const { variation } = stateProps;
+
+	return {
+		...ownProps,
+		...stateProps,
+		trackExposureEventAction:
+			event && variation ? () => dispatchProps.trackExposure( event, variation ) : null,
+	};
+};
+
+export default connect( mapStateToProps, mapDispatchToProps, mergeProps )( Experiment );

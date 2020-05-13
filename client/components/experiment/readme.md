@@ -10,7 +10,7 @@ Usage:
 function SomeExperiment(props) {
     import React from 'react';
     import Experiment, {DefaultVariation, Variation, LoadingVariations} from "client/components/experiment";
-    return (<Experiment name={'experiment_name'}>
+    return (<Experiment name={'experiment_name'} event={'exposure_event'}>
     <DefaultVariation name='A'>
         Shows this variation when:
         <ol>

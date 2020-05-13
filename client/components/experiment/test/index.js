@@ -17,10 +17,15 @@ import Experiment, { Variation, DefaultVariation } from '../index';
 import { LoadingVariations } from 'components/experiment';
 
 function renderWithStore( element, initialState ) {
-	const store = createStore( ( state ) => state, initialState );
+	const actions = [];
+	const reducer = ( state, action ) => {
+		actions.push( action );
+		return state;
+	};
+	const store = createStore( reducer, initialState );
 	return {
 		...render( <Provider store={ store }>{ element }</Provider> ),
-		store,
+		actions,
 	};
 }
 
@@ -36,9 +41,9 @@ function createState( variation, isLoading ) {
 }
 
 describe( 'Experiment Component', () => {
-	const testComponent = ( state ) =>
+	const testComponent = ( state, event = false ) =>
 		renderWithStore(
-			<Experiment name={ 'test' }>
+			<Experiment name={ 'test' } event={ event ? 'event' : undefined }>
 				<DefaultVariation name={ 'a' }>Default</DefaultVariation>
 				<Variation name={ 'b' }>Variation B</Variation>
 				<LoadingVariations>Is Loading</LoadingVariations>
@@ -47,27 +52,44 @@ describe( 'Experiment Component', () => {
 		);
 
 	test( 'renders a default variation if variation is not set and not loading', () => {
-		const { container } = testComponent( createState( undefined, false ) );
+		const { container, actions } = testComponent( createState( undefined, false ) );
 		expect( container ).toMatchSnapshot();
+		expect( actions ).toHaveLength( 1 );
 	} );
 
 	test( 'renders a default variation if loaded', () => {
-		const { container } = testComponent( createState( null, false ) );
+		const { container, actions } = testComponent( createState( null, false ) );
 		expect( container ).toMatchSnapshot();
+		expect( actions ).toHaveLength( 1 );
 	} );
 
 	test( 'renders a variation by name if loaded', () => {
-		const { container } = testComponent( createState( 'b', false ) );
+		const { container, actions } = testComponent( createState( 'b', false ) );
 		expect( container ).toMatchSnapshot();
+		expect( actions ).toHaveLength( 1 );
 	} );
 
 	test( 'renders something while loading if the variation is not defined', () => {
-		const { container } = testComponent( createState( undefined, true ) );
+		const { container, actions } = testComponent( createState( undefined, true ) );
 		expect( container ).toMatchSnapshot();
+		expect( actions ).toHaveLength( 1 );
 	} );
 
 	test( 'assumes variation will not change if already set and reloading variations', () => {
-		const { container } = testComponent( createState( 'b', true ) );
+		const { container, actions } = testComponent( createState( 'b', true ) );
 		expect( container ).toMatchSnapshot();
+		expect( actions ).toHaveLength( 1 );
+	} );
+
+	test( 'does not fire exposure event when loading', () => {
+		const { container, actions } = testComponent( createState( undefined, true ), true );
+		expect( container ).toMatchSnapshot();
+		expect( actions ).toHaveLength( 1 );
+	} );
+
+	test( 'fires exposure event after loading', () => {
+		const { container, actions } = testComponent( createState( 'b', false ), true );
+		expect( container ).toMatchSnapshot();
+		expect( actions ).toHaveLength( 2 );
 	} );
 } );
