@@ -14,6 +14,7 @@ import {
 } from './backend/domain-contact-details-components';
 import {
 	DomainContactValidationRequest,
+	GSuiteContactValidationRequest,
 	DomainContactValidationRequestExtraFields,
 	DomainContactValidationResponse,
 } from './backend/domain-contact-validation-endpoint';
@@ -477,7 +478,9 @@ function prepareUkDomainContactExtraDetailsErrors(
 
 		return {
 			registrantType: details.tldExtraFields.uk?.registrantType?.errors?.map( toErrorPayload ),
-			registrationNumber: details.tldExtraFields.uk?.registrationNumber?.errors?.map( toErrorPayload ),
+			registrationNumber: details.tldExtraFields.uk?.registrationNumber?.errors?.map(
+				toErrorPayload
+			),
 			tradingName: details.tldExtraFields.uk?.tradingName?.errors?.map( toErrorPayload ),
 		};
 	}
@@ -559,6 +562,21 @@ export function prepareDomainContactValidationRequest(
 			fax: details.fax.value,
 			vatId: details.vatId.value,
 			extra,
+		},
+	};
+}
+
+export function prepareGSuiteContactValidationRequest(
+	details: ManagedContactDetails
+): GSuiteContactValidationRequest {
+	return {
+		contact_information: {
+			firstName: details.firstName.value,
+			lastName: details.lastName.value,
+			email: details.email.value || details.alternateEmail.value,
+			alternateEmail: details.alternateEmail.value,
+			postalCode: details.postalCode.value,
+			countryCode: details.countryCode.value,
 		},
 	};
 }
