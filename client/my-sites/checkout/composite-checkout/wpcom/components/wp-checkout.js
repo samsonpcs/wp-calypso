@@ -92,7 +92,6 @@ export default function WPCheckout( {
 
 	const [ items ] = useLineItems();
 	const firstDomainItem = items.find( isLineItemADomain );
-	const domainName = firstDomainItem ? firstDomainItem.wpcom_meta.meta : siteUrl;
 	const isDomainFieldsVisible = !! firstDomainItem;
 	const isGSuiteInCart = items.find(
 		( item ) => !! item.wpcom_meta?.extra?.google_apps_users?.length
@@ -119,17 +118,26 @@ export default function WPCheckout( {
 		touchContactFields();
 
 		if ( isDomainFieldsVisible ) {
+			const domainNames = items
+				.filter( isLineItemADomain )
+				.map( ( domainItem ) => domainItem.wpcom_meta?.meta ?? '' );
+
 			const hasValidationErrors = await domainContactValidationCallback(
 				activePaymentMethod.id,
 				contactInfo,
-				[ domainName ],
+				domainNames,
 				applyDomainContactValidationResults
 			);
 			return ! hasValidationErrors;
 		} else if ( isGSuiteInCart ) {
+			const domainNames = items
+				.filter( ( item ) => !! item.wpcom_meta?.extra?.google_apps_users?.length )
+				.map( ( item ) => item.wpcom_meta?.meta ?? '' );
+
 			const hasValidationErrors = await gSuiteContactValidationCallback(
 				activePaymentMethod.id,
 				contactInfo,
+				domainNames,
 				applyDomainContactValidationResults
 			);
 			debug( 'gSuiteContactValidationCallback returned', hasValidationErrors );
