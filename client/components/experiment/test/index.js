@@ -92,4 +92,10 @@ describe( 'Experiment Component', () => {
 		expect( container ).toMatchSnapshot();
 		expect( actions ).toHaveLength( 2 );
 	} );
+
+	test( 'fires exposure event for default variation', () => {
+		const { container, actions } = testComponent( createState( null, false ), true );
+		expect( container ).toMatchSnapshot();
+		expect( actions ).toHaveLength( 2 );
+	} );
 } );

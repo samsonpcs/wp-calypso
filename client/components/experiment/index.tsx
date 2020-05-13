@@ -66,7 +66,7 @@ const trackExposure = (
 	eventName: string | undefined | null,
 	variation: string | undefined | null
 ) => {
-	if ( eventName && variation ) {
+	if ( eventName ) {
 		return recordTracksEvent( eventName, {
 			variation,
 		} );
@@ -92,8 +92,7 @@ const mergeProps = (
 	return {
 		...ownProps,
 		...stateProps,
-		trackExposureEventAction:
-			event && variation ? () => dispatchProps.trackExposure( event, variation ) : null,
+		trackExposureEventAction: event ? () => dispatchProps.trackExposure( event, variation ) : null,
 	};
 };
 
