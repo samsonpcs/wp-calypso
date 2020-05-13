@@ -71,7 +71,6 @@ import {
 	hasGoogleApps,
 	hasDomainRegistration,
 	hasTransferProduct,
-	needsExplicitAlternateEmailForGSuite,
 } from 'lib/cart-values/cart-items';
 
 const debug = debugFactory( 'calypso:composite-checkout' );
@@ -319,14 +318,10 @@ export default function CompositeCheckout( {
 			! hasDomainRegistration( responseCart ) &&
 			! hasTransferProduct( responseCart );
 		const getIsFieldDisabled = () => isDisabled;
-		const needsAlternateEmailForGSuite =
-			needsOnlyGoogleAppsDetails &&
-			needsExplicitAlternateEmailForGSuite( responseCart, contactDetails );
 
 		return (
 			<ManagedContactDetailsFormFields
 				needsOnlyGoogleAppsDetails={ needsOnlyGoogleAppsDetails }
-				needsAlternateEmailForGSuite={ needsAlternateEmailForGSuite }
 				contactDetails={ contactDetails }
 				contactDetailsErrors={
 					shouldShowContactDetailsValidationErrors ? contactDetailsErrors : {}
