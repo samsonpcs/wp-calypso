@@ -82,15 +82,15 @@ const Home = ( {
 			{ siteId && <QuerySiteChecklist siteId={ siteId } /> }
 			{ siteId && <QueryHomeLayout siteId={ siteId } /> }
 			<SidebarNavigation />
-			<Experiment name="user_home_test" event={ 'calypso_saw_a_a_test' }>
+			<Experiment name="user_home_test" event="calypso_saw_a_a_test">
 				<LoadingVariations>
 					{ /* Normally, we'd load variations before this page could be visible. However, we'll just pretend
 					     we did so that users have an unchanged experience.
 					   */ }
 					{ header }
 				</LoadingVariations>
-				<DefaultVariation name={ 'control' }>{ header }</DefaultVariation>
-				<Variation name={ 'treatment' }>{ header }</Variation>
+				<DefaultVariation name="control">{ header }</DefaultVariation>
+				<Variation name="treatment">{ header }</Variation>
 			</Experiment>
 			{ layout ? (
 				<>
