@@ -128,7 +128,7 @@ const SiteSetupList = ( {
 				setCurrentTaskId( nextTaskId );
 			}
 		}
-	}, [ currentTask, currentTaskId, tasks ] );
+	}, [ tasks ] );
 
 	// Update current task.
 	useEffect( () => {
@@ -149,14 +149,12 @@ const SiteSetupList = ( {
 		}
 	}, [
 		currentTaskId,
-		dispatch,
 		emailVerificationStatus,
 		isDomainUnverified,
 		isEmailUnverified,
 		menusUrl,
 		siteId,
 		siteSlug,
-		tasks,
 		taskUrls,
 		userEmail,
 	] );
