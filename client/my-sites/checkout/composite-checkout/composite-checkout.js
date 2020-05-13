@@ -299,7 +299,6 @@ export default function CompositeCheckout( {
 		validateDomainContact: validateDomainContactDetails || wpcomValidateDomainContactInformation,
 		recordEvent,
 		showErrorMessage: showErrorMessageBriefly,
-		translate,
 	} );
 
 	const gSuiteContactValidationCallback = createGSuiteContactValidationCallback( {
